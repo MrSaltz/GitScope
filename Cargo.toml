@@ -1,6 +1,6 @@
 [package]
 name = "gitscope"
-version = "1.0.0-rc.2"
+version = "1.0.0"
 edition = "2024"
 rust-version = "1.87"
 description = "A Rust CLI for analyzing Git repository statistics."
