@@ -24,7 +24,7 @@ git tag v1.0.0
 git push origin v1.0.0
 ```
 
-The workflow checks that the tag equals the `Cargo.toml` version, builds four binaries (Linux x86_64 with OpenSSL bundled, Windows x86_64, macOS arm64 and x86_64) and creates the Release with generated notes, the archives and `SHA256SUMS`. Tags with a hyphen (such as `v1.1.0-rc.1`) become pre-releases. Once you have checked the Release, publish to crates.io:
+The workflow checks that the tag equals the `Cargo.toml` version, builds four binaries (Linux x86_64, Windows x86_64, macOS arm64 and x86_64; Linux and macOS with OpenSSL bundled) and creates the Release with generated notes, the archives and `SHA256SUMS`. Tags with a hyphen (such as `v1.1.0-rc.1`) become pre-releases. Once you have checked the Release, publish to crates.io:
 
 ```bash
 cargo publish

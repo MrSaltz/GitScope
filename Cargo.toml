@@ -21,10 +21,10 @@ name = "gitscope"
 path = "src/main.rs"
 
 [features]
-# Clones remotos por HTTP(S); `--no-default-features` compila sem TLS (OpenSSL no Linux).
+# Clones remotos por HTTP(S); `--no-default-features` compila sem TLS (OpenSSL no Linux e no macOS).
 default = ["remote"]
 remote = ["git2/https"]
-# Embute o OpenSSL (precisa de perl e make); usado nos binários de release do Linux.
+# Embute o OpenSSL (precisa de perl e make); usado nos binários de release do Linux e do macOS.
 vendored-openssl = ["remote", "git2/vendored-openssl"]
 
 [dependencies]

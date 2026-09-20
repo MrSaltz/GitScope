@@ -120,7 +120,7 @@ shasum -a 256 -c SHA256SUMS --ignore-missing                                   #
 Get-FileHash .\gitscope-vX.Y.Z-x86_64-pc-windows-msvc.zip -Algorithm SHA256    # Windows (PowerShell): compare com o SHA256SUMS
 ```
 
-O binário do Linux leva o OpenSSL dentro, então não depende da libssl do sistema. Os binários aparecem aqui quando a primeira release for publicada; até lá, compile a partir do código-fonte.
+Os binários do Linux e do macOS levam o OpenSSL dentro, então não dependem da libssl do sistema. Os binários aparecem aqui quando a primeira release for publicada; até lá, compile a partir do código-fonte.
 
 ### A partir do código-fonte
 
@@ -128,9 +128,9 @@ Requisitos:
 
 - [Rust](https://rustup.rs) 1.87 ou mais novo.
 - Um compilador C, porque o `git2` compila a libgit2 do código-fonte: as *MSVC Build Tools* no Windows, `gcc`/`clang` no Linux, as Xcode Command Line Tools no macOS.
-- No **Linux**, os arquivos de desenvolvimento do OpenSSL e o `pkg-config` (para clonar por HTTPS): `sudo apt install pkg-config libssl-dev` no Debian/Ubuntu, `sudo dnf install pkgconf-pkg-config openssl-devel` no Fedora. Windows e macOS usam a pilha TLS do sistema e não precisam de nada extra.
+- No **Linux** e no **macOS**, o OpenSSL e o `pkg-config` (para clonar por HTTPS): `sudo apt install pkg-config libssl-dev` no Debian/Ubuntu, `sudo dnf install pkgconf-pkg-config openssl-devel` no Fedora, `brew install openssl pkg-config` no macOS. O Windows usa a pilha TLS do sistema e não precisa de nada extra.
 
-Sem OpenSSL, ou sem precisar de repositórios remotos? Gere um binário só local com `cargo install --path . --no-default-features`.
+Sem OpenSSL, ou sem precisar de repositórios remotos? Gere um binário só local com `cargo install --path . --no-default-features` (ou embuta o OpenSSL com `--features vendored-openssl`, que precisa de `perl` e `make`).
 
 ```bash
 git clone https://github.com/MrSaltz/GitScope.git

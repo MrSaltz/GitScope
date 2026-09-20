@@ -43,11 +43,11 @@ jobs:
             archive: zip
           - os: macos-latest
             target: aarch64-apple-darwin
-            features: ""
+            features: --features vendored-openssl
             archive: tar.gz
           - os: macos-latest
             target: x86_64-apple-darwin
-            features: ""
+            features: --features vendored-openssl
             archive: tar.gz
     steps:
       - uses: actions/checkout@v4

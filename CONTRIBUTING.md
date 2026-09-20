@@ -12,7 +12,7 @@ Fora do escopo (por favor, não abra PRs sobre isso): servidores web ou dashboar
 
 ## Primeiros passos
 
-Requisitos: Rust 1.87+ e um compilador C (veja o [README](README.md#instalação)). O executável `git` **não** é necessário, nem para rodar os testes, e os testes nunca usam a rede. No Linux você também precisa do `pkg-config` e dos arquivos de desenvolvimento do OpenSSL (ou use `--no-default-features`, veja o README).
+Requisitos: Rust 1.87+ e um compilador C (veja o [README](README.md#instalação)). O executável `git` **não** é necessário, nem para rodar os testes, e os testes nunca usam a rede. No Linux e no macOS você também precisa do `pkg-config` e do OpenSSL (ou use `--no-default-features`, veja o README).
 
 ```bash
 git clone https://github.com/MrSaltz/GitScope.git

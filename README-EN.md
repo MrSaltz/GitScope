@@ -120,7 +120,7 @@ shasum -a 256 -c SHA256SUMS --ignore-missing                                   #
 Get-FileHash .\gitscope-vX.Y.Z-x86_64-pc-windows-msvc.zip -Algorithm SHA256    # Windows (PowerShell): compare with SHA256SUMS
 ```
 
-The Linux binary carries OpenSSL inside, so it does not depend on the system's libssl. The binaries appear here once the first release is published; until then, build from source.
+The Linux and macOS binaries carry OpenSSL inside, so they do not depend on the system's libssl. The binaries appear here once the first release is published; until then, build from source.
 
 ### From source
 
@@ -128,9 +128,9 @@ Requirements:
 
 - [Rust](https://rustup.rs) 1.87 or newer.
 - A C compiler, because `git2` builds libgit2 from source: the *MSVC Build Tools* on Windows, `gcc`/`clang` on Linux, Xcode Command Line Tools on macOS.
-- On **Linux**, the OpenSSL development files and `pkg-config` (for HTTPS clones): `sudo apt install pkg-config libssl-dev` on Debian/Ubuntu, `sudo dnf install pkgconf-pkg-config openssl-devel` on Fedora. Windows and macOS use the system TLS stack and need nothing extra.
+- On **Linux** and **macOS**, OpenSSL and `pkg-config` (for HTTPS clones): `sudo apt install pkg-config libssl-dev` on Debian/Ubuntu, `sudo dnf install pkgconf-pkg-config openssl-devel` on Fedora, `brew install openssl pkg-config` on macOS. Windows uses the system TLS stack and needs nothing extra.
 
-No OpenSSL, or no need for remote repositories? Build a local-only binary with `cargo install --path . --no-default-features`.
+No OpenSSL, or no need for remote repositories? Build a local-only binary with `cargo install --path . --no-default-features` (or bundle OpenSSL with `--features vendored-openssl`, which needs `perl` and `make`).
 
 ```bash
 git clone https://github.com/MrSaltz/GitScope.git

@@ -12,7 +12,7 @@ Out of scope (please do not open PRs for these): web servers or dashboards, data
 
 ## Getting started
 
-Requirements: Rust 1.87+ and a C compiler (see the [README](README-EN.md#installation)). The `git` executable is **not** required, not even to run the tests, and the tests never use the network. On Linux you also need `pkg-config` and the OpenSSL development files (or use `--no-default-features`, see the README).
+Requirements: Rust 1.87+ and a C compiler (see the [README](README-EN.md#installation)). The `git` executable is **not** required, not even to run the tests, and the tests never use the network. On Linux and macOS you also need `pkg-config` and OpenSSL (or use `--no-default-features`, see the README).
 
 ```bash
 git clone https://github.com/MrSaltz/GitScope.git
