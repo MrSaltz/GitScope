@@ -1,0 +1,120 @@
+name: Release
+
+# Roda ao publicar uma tag `vX.Y.Z`. Veja docs/RELEASING.md.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  check:
+    name: check version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: The tag must match the version in Cargo.toml
+        run: |
+          version=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "tag $GITHUB_REF_NAME does not match Cargo.toml version $version" >&2
+            exit 1
+          fi
+
+  build:
+    name: build (${{ matrix.target }})
+    needs: check
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            features: --features vendored-openssl
+            archive: tar.gz
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            features: ""
+            archive: zip
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            features: ""
+            archive: tar.gz
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            features: ""
+            archive: tar.gz
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: release-${{ matrix.target }}
+
+      - name: Build
+        run: cargo build --release --locked --target ${{ matrix.target }} ${{ matrix.features }}
+
+      - name: Smoke test (the binary starts and reports its version)
+        # O binário x86_64 de macOS é gerado num runner arm64: só compilamos.
+        if: matrix.target != 'x86_64-apple-darwin'
+        shell: bash
+        run: |
+          exe=target/${{ matrix.target }}/release/gitscope
+          [ "${{ matrix.archive }}" = zip ] && exe="$exe.exe"
+          "$exe" --version
+
+      - name: Package
+        shell: bash
+        run: |
+          name="gitscope-${GITHUB_REF_NAME}-${{ matrix.target }}"
+          exe=gitscope
+          [ "${{ matrix.archive }}" = zip ] && exe=gitscope.exe
+          mkdir "$name"
+          cp "target/${{ matrix.target }}/release/$exe" "$name/"
+          cp README.md README-EN.md CHANGELOG.md CHANGELOG-EN.md LICENSE LICENSE-MIT LICENSE-APACHE "$name/"
+          if [ "${{ matrix.archive }}" = zip ]; then
+            7z a "$name.zip" "$name" > /dev/null
+            echo "ASSET=$name.zip" >> "$GITHUB_ENV"
+          else
+            tar czf "$name.tar.gz" "$name"
+            echo "ASSET=$name.tar.gz" >> "$GITHUB_ENV"
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target }}
+          path: ${{ env.ASSET }}
+          if-no-files-found: error
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Checksums
+        run: |
+          cd dist
+          sha256sum * > SHA256SUMS
+          cat SHA256SUMS
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          flags=""
+          case "$GITHUB_REF_NAME" in *-*) flags="--prerelease" ;; esac
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes $flags
